@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import jsonWebToken from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { User } from "../models/User.module.js";
 const auth = asyncHandler(async (req, _, next) => {
   try {
@@ -11,7 +11,7 @@ const auth = asyncHandler(async (req, _, next) => {
       throw new ApiError(400, "User is not loggedin.");
     }
 
-    const decodedToken = jsonWebToken.verify(token, ACCESS_SECRET);
+    const decodedToken = jwt.verify(token, ACCESS_SECRET);
     const user = await User.findById(decodedToken?._id).select(
       "-password -refreshToken"
     );

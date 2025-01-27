@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-const captainSchema = new mongoose.Schema(
+const captainSchema = new Schema(
   {
     username: {
       type: String,

@@ -4,7 +4,7 @@ import {
   logOutUser,
   registerUser,
 } from "../controllers/user.controller.js";
-import { auth } from "../middlewares/auth.middleware.js";
+import { auth } from '../middelwares/auth.middelware.js';
 
 const userRoutes = Router();
 
