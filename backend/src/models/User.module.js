@@ -18,7 +18,6 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      lowercase: true,
       trim: true,
     },
     socketId: {
@@ -34,13 +33,14 @@ const userSchema = new Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  if (this.isModified(this.password)) {
+  if (this.isModified("password")) {
     this.password = await bcryptjs.hash(this.password, 10);
     next();
   }
 });
 
-userSchema.methods.isPasswordCorrect = async function (password) {
+userSchema.methods.isPasswordCorrect = async function(password){
+  
   return await bcryptjs.compare(password, this.password);
 };
 

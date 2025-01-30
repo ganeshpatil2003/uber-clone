@@ -11,7 +11,7 @@ const auth = asyncHandler(async (req, _, next) => {
       throw new ApiError(400, "User is not loggedin.");
     }
 
-    const decodedToken = jwt.verify(token, ACCESS_SECRET);
+    const decodedToken = jwt.verify(token, process.env.ACCESS_SECRET);
     const user = await User.findById(decodedToken?._id).select(
       "-password -refreshToken"
     );

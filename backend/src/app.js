@@ -26,6 +26,6 @@ app.use(cookieParser());
 
 app.use('/api1/v1/captains', captainRoutes);
 
-app.use('api1/v1/users', userRoutes);
+app.use('/api1/v1/users', userRoutes);
 
 export {app};

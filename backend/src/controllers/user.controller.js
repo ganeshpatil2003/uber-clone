@@ -10,8 +10,8 @@ const options = {
 
 const generateAccessAndRefreshTokens = async (id) => {
   const user = await User.findById(id);
-  const accessToken = user.generateAccessToken();
-  const refreshToken = user.generateRefreshToken();
+  const accessToken = await user.generateAccessToken();
+  const refreshToken = await user.generateRefreshToken();
   user.refreshToken = refreshToken || "";
   await user.save();
   return { accessToken, refreshToken };
@@ -26,8 +26,8 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.find({
     $or: [{ username }, { email }],
   });
-
-  if (user) {
+  
+  if (user.length > 0) {
     throw new ApiError(400, "User already exists");
   }
   const newUser = await User.create({
@@ -54,12 +54,13 @@ const loginUser = asyncHandler(async (req, res) => {
   if (!email || !password) {
     throw new ApiError(400, "Please fill in all fields");
   }
-  const user = await User.findOne({ email }).select("-password -refreshToken");
+  const user = await User.findOne({ email });
   if (!user) {
     throw new ApiError(400, "User not registered.");
   }
-
-  const isValidPassword = user.isPasswordCorrect(password);
+  
+  const isValidPassword = await user.isPasswordCorrect(password);
+  console.log(isValidPassword)
   if (!isValidPassword) {
     throw new ApiError(400, "Invalid Password");
   }

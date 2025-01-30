@@ -10,7 +10,7 @@ const captainAuth = asyncHandler(async (req, _, next) => {
       throw new ApiError(400, "User is not loggedin.");
     }
 
-    const decodedToken = jsonWebToken.verify(token, ACCESS_SECRET);
+    const decodedToken = jsonWebToken.verify(token,process.env.ACCESS_SECRET);
     const user = await Captain.findById(decodedToken?._id).select(
       "-password -refreshToken"
     );
