@@ -10,7 +10,7 @@ const UserLogIn = () => {
     const handelSubmit = (e) => {
         e.preventDefault(true);
         console.log(data);
-        setData({email:"",password:""})
+        setData({email:"",password:""});
     }
   return (
     <div className="flex h-screen flex-col justify-between ">
