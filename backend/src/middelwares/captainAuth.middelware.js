@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import jsonWebToken from "jsonwebtoken";
+import { Captain } from "../models/Captain.module.js";
 const captainAuth = asyncHandler(async (req, _, next) => {
   try {
     const token =

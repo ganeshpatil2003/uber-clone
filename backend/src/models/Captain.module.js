@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose";
+import bcryptjs from "bcryptjs";
+import jsonWebToken from "jsonwebtoken";
 const captainSchema = new Schema(
   {
     username: {
@@ -16,7 +18,6 @@ const captainSchema = new Schema(
     password: {
       type: String,
       required: true,
-      lowercase: true,
       trim: true,
     },
     socketId: {
@@ -67,7 +68,7 @@ const captainSchema = new Schema(
 );
 
 captainSchema.pre("save", async function (next) {
-  if (this.isModified(this.password)) {
+  if(this.isModified("password")) {
     this.password = await bcryptjs.hash(this.password, 10);
     next();
   }

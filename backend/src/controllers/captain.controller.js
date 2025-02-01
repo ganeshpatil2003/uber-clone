@@ -19,7 +19,7 @@ const captainRegister = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please fill in all fields");
   }
   const captain = await Captain.find({ email });
-  if (captain) {
+  if (captain.length>0) {
     throw new ApiError(400, "Captain already exists");
   }
   const newCaptain = await Captain.create({
@@ -49,25 +49,25 @@ const captainLogin = asyncHandler(async (req, res) => {
   if (!email || !password) {
     throw new ApiError(400, "Please fill in all fields");
   }
-  const captain = await Captain.findOne({ email }).select(
-    "-password -refreshToken"
-  );
+  const captain = await Captain.findOne({ email });
   if (!captain) {
     throw new ApiError(400, "Invalid email or password");
   }
   const isPasswordCorrect = await captain.isPasswordCorrect(password);
+
   if (!isPasswordCorrect) {
     throw new ApiError(400, "Invalid email or password");
   }
-  const accessToken = captain.generateAccessToken();
-  const refreshToken = captain.generateRefreshToken();
+  const accessToken = await captain.generateAccessToken();
+  const refreshToken = await captain.generateRefreshToken();
   captain.refreshToken = refreshToken;
   await captain.save();
+  const createdCaptain = await Captain.findById(captain.id).select("-password");
   return res
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, captain, "Captain logged in successfully"));
+    .json(new ApiResponse(200, createdCaptain, "Captain logged in successfully"));
 });
 
 const captainLogout = asyncHandler(async (req, res) => {

@@ -1,9 +1,17 @@
-import React, { useState } from 'react'
-import { FaArrowRight } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const CaptainSignUp = () => {
-  const [data, setData] = useState({ email: "", password: "" , username : "" });
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+    username: "",
+    capacity: 0,
+    plate: "",
+    color: "",
+    vehicle: "",
+  });
   const handelOnChange = (e) => {
     const name = e.target.name;
     setData({ ...data, [name]: e.target.value });
@@ -11,7 +19,15 @@ const CaptainSignUp = () => {
   const handelSubmit = (e) => {
     e.preventDefault(true);
     console.log(data);
-    setData({ email: "", password: "",username : "" });
+    setData({
+      email: "",
+      password: "",
+      username: "",
+      capacity: 0,
+      plate: "",
+      color: "",
+      vehicle: "",
+    });
   };
   return (
     <div className="flex h-screen flex-col justify-between ">
@@ -24,7 +40,7 @@ const CaptainSignUp = () => {
         </div>
 
         <form action="" className="py-5 px-5 pb-0" onSubmit={handelSubmit}>
-        <h3 className="mt-3 mb-1">What's the captain's name?</h3>
+          <h3 className="mt-3 mb-1">What's the captain's name?</h3>
           <input
             name="username"
             value={data.username}
@@ -54,6 +70,60 @@ const CaptainSignUp = () => {
             required
             placeholder="password"
           />
+          <div>
+            <div className="flex gap-2">
+              <div>
+                <h3 className="mt-3 mb-1">Vehicle color</h3>
+                <input
+                  name="color"
+                  value={data.color}
+                  onChange={handelOnChange}
+                  type="text"
+                  className="bg-[#eeeeee] rounded w-full py-2 px-2"
+                  required
+                  placeholder="color exp:red pink etc."
+                />
+              </div>
+              <div>
+                <h3 className="mt-3 mb-1">Vehicle type</h3>
+                <input
+                  name="vehicle"
+                  value={data.vehicle}
+                  onChange={handelOnChange}
+                  type="text"
+                  className="bg-[#eeeeee] rounded w-full py-2 px-2"
+                  required
+                  placeholder="exp : auto car motorcycle"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <div>
+                <h3 className="mt-3 mb-1">No of persons</h3>
+                <input
+                  name="capacity"
+                  value={data.capacity}
+                  onChange={handelOnChange}
+                  type="tel"
+                  className="bg-[#eeeeee] rounded w-full py-2 px-2"
+                  required
+                  placeholder="exp : 4"
+                />
+              </div>
+              <div>
+                <h3 className="mt-3 mb-1">Number plate no</h3>
+                <input
+                  name="plate"
+                  value={data.plate}
+                  onChange={handelOnChange}
+                  type="text"
+                  className="bg-[#eeeeee] rounded w-full py-2 px-2"
+                  required
+                  placeholder="password"
+                />
+              </div>
+            </div>
+          </div>
           <button
             type="submit"
             className="w-full text-center text-white py-2 bg-black rounded mt-4 "
@@ -69,14 +139,12 @@ const CaptainSignUp = () => {
         </Link>
       </div>
       <div>
-    
         <div className="px-5 py-2 mb-7 text-sm text-center underline underline-offset-1 text-blue-600">
-         Terms and policies
+          Terms and policies
         </div>
-      
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CaptainSignUp
+export default CaptainSignUp;
