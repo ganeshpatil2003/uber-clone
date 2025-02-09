@@ -46,6 +46,20 @@ export const captainApi = createApi({
         }
       },
     }),
+    getCaptain: builder.query({
+      query: () => ({
+        url: "/",
+        method: "GET",
+      }),
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled;
+          dispatch(captainLoggedIn({ captain: result.data.data }));
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
   }),
 });
 
@@ -53,4 +67,5 @@ export const {
   useCaptainLogInMutation,
   useCaptainRegisterMutation,
   useCaptainLogOutMutation,
+  useGetCaptainQuery,
 } = captainApi;

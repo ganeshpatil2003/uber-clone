@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Captain } from "../models/Captain.module.js";
-import { ApiError } from "../utils/ApiError.js";    
+import { ApiError } from "../utils/ApiError.js";
 
 const options = {
   httpOnly: true,
@@ -19,7 +19,7 @@ const captainRegister = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Please fill in all fields");
   }
   const captain = await Captain.find({ email });
-  if (captain.length>0) {
+  if (captain.length > 0) {
     throw new ApiError(400, "Captain already exists");
   }
   const newCaptain = await Captain.create({
@@ -67,7 +67,9 @@ const captainLogin = asyncHandler(async (req, res) => {
     .status(200)
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options)
-    .json(new ApiResponse(200, createdCaptain, "Captain logged in successfully"));
+    .json(
+      new ApiResponse(200, createdCaptain, "Captain logged in successfully")
+    );
 });
 
 const captainLogout = asyncHandler(async (req, res) => {
@@ -83,4 +85,11 @@ const captainLogout = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Captain logged out successfully"));
 });
 
-export { captainRegister, captainLogin, captainLogout };
+const getCaptain = asyncHandler(async (req, res) => {
+  const captain = await Captain.findById(req.user._id).select(
+    "-password -refreshToken"
+  );
+  return res.status(200).json(new ApiResponse(200, captain, "Captain found"));
+});
+
+export { captainRegister, captainLogin, captainLogout, getCaptain };
