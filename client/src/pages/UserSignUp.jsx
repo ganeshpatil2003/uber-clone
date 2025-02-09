@@ -1,22 +1,42 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useRegisterUserMutation } from "../store/apis/userApi";
+import toast from "react-hot-toast";
+import LoadingSpinner from "../components/LoadingSpinner";
 const UserSignUp = () => {
-  const [data, setData] = useState({ email: "", password: "" , username : "" });
+  const navigate = useNavigate();
+  const [
+    registerUser,
+    { data: registerUserData, isLoading, isSuccess, isError, error },
+  ] = useRegisterUserMutation();
+  const [data, setData] = useState({ email: "", password: "", username: "" });
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(registerUserData.message);
+      navigate("/login");
+    }
+    if (isError) {
+      toast.error(error.data.message);
+    }
+  }, [isSuccess, isError]);
+
   const handelOnChange = (e) => {
     const name = e.target.name;
     setData({ ...data, [name]: e.target.value });
   };
-  const handelSubmit = (e) => {
+
+  const handelSubmit = async (e) => {
     e.preventDefault(true);
-    console.log(data);
-    setData({ email: "", password: "" });
+    await registerUser(data);
+    if (isSuccess) {
+      setData({ email: "", password: "", username: "" });
+    }
   };
   return (
     <div className="flex h-screen flex-col justify-between ">
       <div>
         <img src="logo.png" className="w-20 pl-5 pt-10" alt="logoimage" />
         <form action="" className="py-5 px-5 pb-0" onSubmit={handelSubmit}>
-          
           <h3 className="mt-3 mb-1">What's your Username?</h3>
           <input
             name="username"
@@ -48,10 +68,18 @@ const UserSignUp = () => {
             placeholder="password"
           />
           <button
+            disabled={isLoading}
             type="submit"
             className="w-full text-center text-white py-2 bg-black rounded mt-4 "
           >
-           Create an account
+            {isLoading ? (
+              <div className="flex justify-between items-center gap-2">
+                <LoadingSpinner />
+                Create an account
+              </div>
+            ) : (
+              "Create an account"
+            )}
           </button>
         </form>
         <Link
@@ -63,7 +91,7 @@ const UserSignUp = () => {
       </div>
       <div>
         <div className="px-5 py-2 mb-7 text-sm text-center underline underline-offset-1 text-blue-600">
-         Terms and policies
+          Terms and policies
         </div>
       </div>
     </div>

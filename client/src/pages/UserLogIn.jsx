@@ -1,19 +1,23 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { useLogInUserMutation } from "../store/apis/userApi";
 
 const UserLogIn = () => {
 
-  
-  const [registerUser, { data: registerData, isLoading, isError, isSuccess }] =
-    useRegisterUserMutation();
+  const navigate = useNavigate();
+  const [logInUser, { data: registerData, isLoading, isError, isSuccess ,error}] =
+    useLogInUserMutation();
   const [data, setData] = useState({ email: "", password: "" });
 
   useEffect(() => {
     if(isError){
-
+      toast.error(error?.data?.message);
     }
     if(isSuccess){
-      
+      toast.success(registerData.message);
+      navigate('/home');
     }
   }, [isError,isSuccess]);
 
@@ -25,7 +29,7 @@ const UserLogIn = () => {
 
   const handelSubmit = async (e) => {
     e.preventDefault(true);
-    const result = await registerUser(data);
+    const result = await logInUser(data);
     if(result?.data?.statuscode === 200){
       setData({ email: "", password: "" });
     }
@@ -57,10 +61,11 @@ const UserLogIn = () => {
             placeholder="password"
           />
           <button
+          disabled = {isLoading}
             type="submit"
             className="w-full text-center text-white py-2 bg-black rounded mt-4 "
           >
-            Log in
+           { isLoading ? <div className="flex justify-center gap-2 items-center"><LoadingSpinner/>Log in</div> : "Log in"}
           </button>
         </form>
         <Link

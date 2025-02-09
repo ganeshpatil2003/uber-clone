@@ -1,16 +1,32 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
+import { useCaptainLogInMutation } from "../store/apis/captainApi";
+import toast from "react-hot-toast";
+import LoadingSpinner from "../components/LoadingSpinner";
 const CaptainLogIn = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "" });
+  const [captainLogIn,{data :captainData,isError,isSuccess,isLoading,error}] = useCaptainLogInMutation();
+  useEffect(() => {
+    if(isSuccess){
+      toast(captainData.message);
+      navigate("/captain-signup");
+    }
+    if(isError){
+      toast.error(error.data.message);
+    }
+  },[isSuccess,isError])
   const handelOnChange = (e) => {
     const name = e.target.name;
     setData({ ...data, [name]: e.target.value });
   };
-  const handelSubmit = (e) => {
+  const handelSubmit = async (e) => {
     e.preventDefault(true);
-    console.log(data);
-    setData({ email: "", password: "" });
+    await captainLogIn(data);
+    if(isSuccess){
+      setData({ email: "", password: "" });
+    } 
   };
   return (
     <div className="flex h-screen flex-col justify-between ">
@@ -44,10 +60,11 @@ const CaptainLogIn = () => {
             placeholder="password"
           />
           <button
+          disabled= {isLoading}
             type="submit"
             className="w-full text-center text-white py-2 bg-black rounded mt-4 "
           >
-            Log in
+            {isLoading?<div className="flex justify-between items-center gap-2"><LoadingSpinner/>Log in</div>:"Log in"}
           </button>
         </form>
         <Link
